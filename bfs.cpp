@@ -1,79 +1,66 @@
 #include<bits/stdc++.h>
 using namespace std;
-int used[1001];
-int da[7] = {1,-1,0,0,0,0};
-int db[7] = {0,0,1,-1,0,0};
-int dc[7] = {0,0,0,0,1,-1};
-struct State {
-	int a;
-	int b;
-	int c;
-	int step;
+int sx,sy,ex,ey,step = 0,m,n;
+int dx[4] = {1,0,-1,0};
+int dy[4] = {0,1,0,-1};
+bool used[10][10];
+int a[10][10];
+struct State{
+	int x;
+	int y;
+    int step;
 };
-bool isinvalidpos(int a,int b,int c) {
-	int n = a * 100 + b * 10 + c; 
-	if (a < 0 || a >= 10 || b < 0 || b >= 10 || c < 0 || c >= 10){
+bool panduan(int nx,int ny) {
+	if (nx < 0 || nx >= m || ny < 0 || ny > n) {
 		return true;
 	}
-	if (used[n]){
+	if (used[nx][ny]) {
 		return true;
 	}
-	used[n] = 1;
+	if(a[nx][ny] == 1){
+		return true;
+	}
+	used[nx][ny] = true;
 	return false;
 }
-State bfs(int a,int b,int c,int xa,int xb,int xc) {
+void bfs(){
 	queue <State> q;
 	State cur;
-	cur.a = a;
-	cur.b = b;
-	cur.c = c;
+	cur.x = sx;
+	cur.y = sy;
+	cur.step = 0;
+	used[sx][sy] = true;
 	q.push(cur);
 	while(!q.empty()) {
-		cur = q.front();
 		q.pop();
-		if (cur.a == xa && cur.b == xb && cur.c == xc) {
-			return cur;
+		State next = cur;
+		if (cur.x == ex&&cur.y == ey) {
+		step++;
+		return cur;
+	    }
+	    for (int i = 0; i < 4; i++) {
+	    	int nx = cur.x + dx[i];
+	    	int ny = cur.y + dy[i];
+	    	if (panduan(nx,ny)){
+	    		continue;
+			}
+			next.x = nx;
+			next.y = ny;
+			q.push(next);
 		}
-		for (int i = 0; i < 7; i++) {
-			int na = cur.a + da[i];
-			int nb = cur.b + db[i];
-			int nc = cur.c + dc[i];
-			if (isinvalidpos(na,nb,nc)) {
-				continue;
-			}
-		State next = cur;
-		next.a = na;
-		next.b = nb;
-		next.c = nc;
-		next.step = cur.step + 1;
-		q.push(next);
-		}		
-	
-	
-		int na = cur.c;
-		int nb = cur.b;
-		int nc = cur.a;
-		
-				if (isinvalidpos(na,nb,nc)) {
-				continue;
-			}
-		State next = cur;
-		next.a = na;
-		next.b = nb;
-		next.c = nc;
-		next.step = cur.step + 1;
-		q.push(next);	
-		
-	}
-	cur.step = -1;
-	return cur;
-}
-int main() {
-	int a,b,c,xa,xb,xc;
-	scanf("%d%d%d%d%d%d",&a,&b,&c,&xa,&xb,&xc);
-	State s = bfs(a,b,c,xa,xb,xc);
-	if (s.step != -1) {
-		printf("%d\n",s.step);
 	}
 }
-
+int main(void){
+	int t,x,y;
+	scanf("%d %d %d\n%d %d %d %d",&n,&m,&t,&sx,&sy,&ex,&ey);
+	memset(used,false,sizeof(used));
+	memset(a,0,sizeof(a));
+	for(int i = 0; i < t; i++) {
+		scanf("%d %d",&x,&y);
+		
+		a[x][y] = 1;
+	}
+	bfs();
+	printf("%d",s.step);
+	return 0;
+}
